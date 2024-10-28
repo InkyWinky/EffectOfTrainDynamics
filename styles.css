@@ -1,0 +1,82 @@
+html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.webpage-container {
+  display: grid;
+  place-items: center;
+  /* Centers both horizontally and vertically */
+  height: auto;
+  /* Full viewport height */
+}
+
+.centre-aligned {
+  text-align: center;
+}
+
+.content {
+  width: 50%;
+  text-align: left;
+  /* Centers text inside the content */
+}
+
+.centre-img-style {
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.number-input {
+  width: 50px;
+}
+
+.two-col-container {
+  /* Style for two columns */
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  /* Two equal columns */
+  gap: 10px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-2-col-even {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.right-line-border {
+  border-right: 1px solid #000;
+}
+
+#vertical-negligible {
+  color: red;
+  display: none;
+}
+
+.small-right-image {
+  width: 200px;
+}
+
+.centre-items-inside {
+  display: flex;
+  justify-content: center;
+}
+
+#sticky-contents {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  width: 400px;
+  padding: 20px;
+  display: none;
+}

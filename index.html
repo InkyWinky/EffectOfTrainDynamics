@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <div id="sticky-contents">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#context">Context</a></li>
+            <li><a href="#assumptions">Assumptions</a></li>
+            <li><a href="#camera-config">Camera Configuration</a></li>
+            <ul>
+                <li><a href="#longitudinal-fov">Longitudinal Field of View</a></li>
+                <li><a href="#lateral-fov">Lateral Field of View</a></li>
+            </ul>
+            <li><a href="#train-config">Train Configuration</a></li>
+            <li><a href="#static-error">Static Error</a></li>
+            <ul>
+                <li><a href="#error-due-to-resolution">Error Due to Resolution</a></li>
+                <li><a href="#coc">Circle of Confusion</a></li>
+            </ul>
+            <li><a href="#vertical-error">Effect of Vertical Movement</a></li>
+            <li><a href="#lateral-error">Effect of Lateral Movement</a></li>
+            <li><a href="#pitch-error">Effect of Pitch of Train</a></li>
+            <li><a href="#yaw-error">Effect of Yaw of Train</a></li>
+            <li><a href="#roll-error">Effect of Roll of Train</a></li>
+
+        </ul>
+    </div>
+    <div class="webpage-container">
+
+        <div class="content">
+            <h1 class="centre-aligned">Effects of Train Dynamics on Line Scan Cameras</h1>
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#context">Context</a></li>
+                <li><a href="#assumptions">Assumptions</a></li>
+                <li><a href="#camera-config">Camera Configuration</a></li>
+                <ul>
+                    <li><a href="#longitudinal-fov">Longitudinal Field of View</a></li>
+                    <li><a href="#lateral-fov">Lateral Field of View</a></li>
+                </ul>
+                <li><a href="#train-config">Train Configuration</a></li>
+                <li><a href="#static-error">Static Error</a></li>
+                <ul>
+                    <li><a href="#error-due-to-resolution">Error Due to Resolution</a></li>
+                    <li><a href="#coc">Circle of Confusion</a></li>
+                </ul>
+                <li><a href="#vertical-error">Effect of Vertical Movement</a></li>
+                <li><a href="#lateral-error">Effect of Lateral Movement</a></li>
+                <li><a href="#pitch-error">Effect of Pitch of Train</a></li>
+                <li><a href="#yaw-error">Effect of Yaw of Train</a></li>
+                <li><a href="#roll-error">Effect of Roll of Train</a></li>
+
+            </ul>
+
+            <h2 id="context">Context</h2>
+            <ul>
+                <li>Line Scan cameras are attached to the bottom of a train to capture images of the moving rail
+                    underneath.</li>
+                <li>The dynamics of the rolling stock may impact the quality of the captured images.</li>
+                <li>This document outlines the effect of the dynamics of the rollingstock on the quality of the images.
+                </li>
+            </ul>
+            <h2 id="assumptions">Assumptions</h2>
+            <p>This document assumes that the camera is mounted at the nominal position with <strong>zero</strong> yaw,
+                roll or pitch angle when not subjected to any train dynamics, as shown in the image to the left below.
+            </p>
+            <img class="centre-img-style" src="images/img1.png" alt="Mounting location">
+            <p>Mounting the camera at any non-zero yaw, roll and/or pitch angle may cause an amplified reaction to train
+                dynamics. </p>
+            <h2 id="camera-config">Camera Configuration</h2>
+            <p>These values are the specifications of the <a
+                    href="https://www.1stvision.com/cameras/models/Teledyne-DALSA/LA-GM-02K08A" target="_blank">Teledyne
+                    Linea E
+                    Monochrome 2k Linescan Camera</a>. Note that changing these values will change the values in the
+                rest of the document.</p>
+            <div id="camera-config-container">
+                <form id="camera-param-form" action="">
+                    <label for="res-width">Resolution (width x height) :</label>
+                    <input class="number-input" type="number" id="res-width" name="res-width" value="2048">
+                    <span>x</span>
+                    <input class="number-input" type="res-height" id="res-height" name="res-height"
+                        value="1"><span><br><br>
+                        <label for="pixel-width">Pixel-width:</label>
+                        <input class="number-input" type="number" id="pixel-width" name="pixel-width"
+                            value="7.04"><span> µm</span><br><br>
+                        <label for="pixel-height">Pixel-height:</label>
+                        <input class="number-input" type="number" id="pixel-height" name="pixel-height"
+                            value="7.04"><span> µm</span><br><br>
+                        <label for="lens">Lens length:</label>
+                        <input class="number-input" type="number" id="lens" name="lens" value="5"><span>
+                            mm</span><br><br>
+                        <label for="image-height">Image height:</label>
+                        <input class="number-input" type="number" id="image-height" name="image-height"
+                            value="512"><span> pixels</span><br><br>
+                        <label for="working-dist">Mounting height from rail (working distance):</label>
+                        <input class="number-input" type="number" id="working-dist" name="working-dist"
+                            value="1100"><span> mm</span><br><br>
+                        <input type="submit" value="Change camera parameters">
+                </form>
+            </div>
+
+            <div class="two-col-container">
+                <div class="column">
+                    <h3 id="longitudinal-fov">Longitudinal Field of View</h3>
+                    <p>The longitudinal field of view is <input class="number-input long-fov-result" type="text"
+                            readonly>
+                        mm</p>
+                    <h3 id="lateral-fov">Lateral Field of View</h3>
+                    <p>The lateral field of view is <input class="number-input lat-fov-result" type="text" readonly> mm
+                    </p>
+                </div>
+                <div class="column"> <img class="centre-img-style" src="images/longfov.png" alt="FOV Methodology">
+                </div>
+            </div>
+            <h2 id="train-config">Train Configuration</h2>
+            <label for="train-speed">Train speed:</label>
+            <input class="number-input" type="number" id="train-speed-kmh" name="train-speed" value="90"><span>
+                km/h <button onclick="updateTrainSpeed()">Update train speed</button></span>
+            <p>The required acquisition rate is <span id="acq-rate"></span> Hz</p>
+            <h2 id="static-error">Static Error</h2>
+            <h3 id="error-due-to-resolution">Error Due To Resolution</h3>
+            <div>
+                <p>Because the sensor pixels in the <a
+                        href="https://www.1stvision.com/cameras/models/Teledyne-DALSA/LA-GM-02K08A"
+                        target="_blank">Teledyne
+                        Linea E
+                        Monochrome 2k Linescan Camera</a> are square, 1 pixel covers <input
+                        class="number-input long-fov-result" type="text" readonly>
+                    mm</p>
+            </div>
+            <div class="centre-items-inside">
+                <img src="images/static_error_image.png" alt="static error image" style="width: 350px;">
+            </div>
+            <h2 id="vertical-error">Effect of Vertical Movement</h2>
+            <div class="container-2-col-even">
+                <div class="right-line-border">
+                    <form id="vertical-error-form" action="">
+                        <label for="feature size">Feature size:</label>
+                        <input class="number-input" type="feature-size" id="feature-size" name="feature-size"
+                            value="3"><span></span>
+                        mm</span><br><br>
+                        <label for="vertical-displacement ">Vertical displacement (+ve for away from rail, -ve for
+                            closer to
+                            rail):</label>
+                        <input class="number-input" type="number" id="vertical-displacement"
+                            name="vertical-displacement" value="100"><span>
+                            mm</span><br><br>
+                        <input type="submit" value="Calculate error">
+                    </form>
+                    <p id="vertical-negligible">The effect is negligible as the error is smaller than the error due to
+                        resolution.</p>
+                </div>
+
+                <div>
+                    <p>The captured feature size will be <input class="number-input" id="vertical-error-perc"
+                            type="text" readonly>% or <input class="number-input" id="vertical-error-mm" type="text"
+                            readonly> mm <span id="smaller-larger"></span> than the actual feature size.</p>
+                    <p>The acquisition rate will be <input class="number-input" id="vertical-acquisition-error"
+                            type="text" readonly>% <span id="acq-rate-change"></span> than the actual required
+                        acquisition rate of <input class="number-input" id="vertical-acquisition" type="text" readonly>
+                        Hz.</p>
+                    <p>This means that for the duration of the vertical displacement the feature will appear <input
+                            class="number-input" id="vertical-acq-percent" type="text" readonly>% <span
+                            id="vertical-compress-elongate"></span>.</p>
+                </div>
+
+
+
+            </div>
+            <h2 id="lateral-error">Effect of Lateral Movement</h2>
+            <div class="container-2-col-even">
+                <div class="container-2-col-even">
+                    <div><label for="lateral-displacement">Lateral displacement=Lateral shift in the row of pixels:
+                        </label>
+                        <input class="number-input" type="number" id="lateral-displacement" name="lateral-displacement"
+                            value="44"><span> mm</span>
+                    </div>
+
+                    <div class="right-line-border">
+                        <img src="images/lateral_image.png" alt="lateral image" class="small-right-image">
+                    </div>
+                </div>
+
+                <div>
+                    <p>Lateral movement in the train would cause a lateral shift in each row of pixels in the captured
+                        image. There is an equal relationship between the lateral movement of the train and the shift in
+                        the
+                        row of pixels. </p>
+
+                    <p>Refer to lateralEffectSimulator.py for a simulation of lateral effects on an image.</p>
+                </div>
+            </div>
+            <h2 id="pitch-error">Effect of Pitch of Train</h2>
+            <div class="container-2-col-even">
+                <div class="container-2-col-even">
+                    <div>
+                        <label for="pitch-angle">Pitch Angle:</label>
+                        <input class="number-input" type="pitch-angle" id="pitch-angle" name="pitch-angle"
+                            value="2"><span></span>°</span><br><br>
+                        <button onClick="updatePitchResults()"> Calculate error</button>
+                    </div>
+                    <div class="right-line-border"> <img src="images/pitch_image.png" alt="pitch image"
+                            class="small-right-image">
+                    </div>
+                </div>
+
+                <div>
+                    <p><input class="number-input" id="skipped-rows-mm" type="text" readonly> mm of track will be
+                        <span id="skipped-repeated"></span>.
+                    </p>
+                    <p>Working distance increases by<input class="number-input" id="pitch-new-working-dist" type="text"
+                            type="text" readonly> mm, thus the captured feature size will be <input class="number-input"
+                            id="pitch-vertical-error-perc" type="text" readonly>% or <input class="number-input"
+                            id="pitch-vertical-error-mm" type="text" readonly> mm smaller
+                        than the actual feature size.</p>
+
+                </div>
+            </div>
+            <h2 id="yaw-error">Effect of Yaw of Train</h2>
+            <div class="container-2-col-even">
+                <div class="container-2-col-even">
+                    <div>
+                        <label for="yaw-angle">Yaw Angle:</label>
+                        <input class="number-input" type="number" id="yaw-angle" name="yaw-angle"
+                            value="2"><span></span>°</span><br><br>
+                        <label for="yaw-freq">Frequency of yaw (assume sinusoidal):</label>
+                        <input class="number-input" type="number" id="yaw-freq" name="yaw-freq" value="2"><span></span>
+                        Hz</span><br><br>
+                        <label for="yaw-hor-pos">Horizontal location of interest:</label>
+                        <input class="number-input" type="number" id="yaw-hor-pos" name="yaw-hor-pos"
+                            value="700"><span></span> mm</span><br><br>
+                        <button onClick="updateYawResults()"> Calculate error</button>
+                    </div>
+                    <div class="right-line-border"> <img src="images/yaw_image.png" alt="yaw image"
+                            style="width: 200px">
+                    </div>
+                </div>
+                <div>
+                    <p><input class="number-input" id="yaw-vertical-skip-mm" type="text" readonly> mm along the
+                        longitudinal direction of the track will be
+                        skipped and repeated at <span id="yaw-hor-pos-value"></span> mm horizontally
+                        to the right and left of the position of the camera.
+                    </p>
+                    <p>The skew will <span id="skew-constant-or-not"></span> constant within the capture of the image.
+                    </p>
+
+                </div>
+            </div>
+            <h2 id="roll-error">Effect of Roll of Train</h2>
+            <div class="container-2-col-even">
+                <div class="container-2-col-even">
+                    <div>
+                        <label for="roll-angle">Roll Angle:</label>
+                        <input class="number-input" type="number" id="roll-ang le" name="roll-angle"
+                            value="2"><span></span>°</span><br><br>
+                    </div>
+                    <div class="right-line-border"> <img src="images/roll_image.png" alt="roll image"
+                            style="width: 250px">
+                    </div>
+                </div>
+                <div>
+                    <p><input class="number-input" id="roll-skipped-edges-mm" type="text" readonly> mm of the <span
+                            id="roll-missing-side"></span> of the track will be missing from the image, and the same
+                        amount will be further captured on the <span id="roll-extended-side"></span> of the track.
+                    </p>
+                    <p>The working distance will be slightly varied but the effects will be negligible.
+
+                </div>
+            </div>
+        </div>
+</body>
+<script type="importmap">
+            {
+              "imports": {
+                "@material/web/": "https://esm.run/@material/web/"
+              }
+            }
+          </script>
+<script type="module">
+    import '@material/web/all.js';
+    import { styles as typescaleStyles } from '@material/web/typography/md-typescale-styles.js';
+    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+</script>
+<script src="main.js" async defer></script>
+<!-- For maths rendering: -->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" readonly></script>
+
+
+
+</html>
